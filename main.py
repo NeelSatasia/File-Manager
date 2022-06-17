@@ -1,9 +1,12 @@
 import os
 from simple_term_menu import TerminalMenu
 import math
+from datamanager import *
 
 #Commands
-change_dir = 'Change Directory'
+add_new_dir = 'Add Directory'
+remove_dir = 'Remove Directory'
+change_dir = 'Change Current Directory'
 get_dir_info = 'Get Directory Info'
 get_file_location = 'Get File Location'
 create_file = 'Create File'
@@ -13,16 +16,19 @@ delete_all_files = 'Delete All Files'
 delete_type_of_files = 'Delete A Type Of Files'
 delete_files_with_specific_size = 'Delete Files With Specific Size'
 create_dir = 'Create Directory'
+delete_dir = 'Delete Directory'
 sort_filenames_numerically = 'Sort File Names Numerically'
 close_program = '[x] Close'
 
 current_dir = 'None'
 invalid_input = '(Invalid Input!)'
 
-options = [change_dir, get_dir_info, get_file_location, create_file, rename_file, delete_file, delete_all_files, delete_type_of_files, delete_files_with_specific_size, create_dir, sort_filenames_numerically, close_program]
+options = [add_new_dir, remove_dir, change_dir, get_dir_info, get_file_location, create_file, rename_file, delete_file, delete_all_files, delete_type_of_files, delete_files_with_specific_size, create_dir, delete_dir, sort_filenames_numerically, close_program]
 menu = TerminalMenu(options)
 
 print()
+
+create
 
 while True:
     menu_index = menu.show()
@@ -65,7 +71,7 @@ while True:
             new_file = open(os.path.join(os.getcwd(), file_name), 'w')
             new_file.close()
 
-            print('\tFile successfully created\n')
+            print('\t(File successfully created)\n')
 
     elif options[menu_index] == rename_file:
         old_file_name = input('Old File Name (example.txt): ')
@@ -105,7 +111,7 @@ while True:
                     os.remove(file)
                     total_files_deleted += 1
 
-            print('\t' + total_files_deleted + ' files deleted\n')
+            print('\t(' + total_files_deleted + ' files deleted)\n')
 
     elif options[menu_index] == delete_type_of_files:
         file_type = input("Enter File Type (Example: txt): ")
@@ -118,7 +124,7 @@ while True:
                 os.remove(file)
                 total_files_deleted += 1
 
-        print('\t' + total_files_deleted + ' files deleted\n')
+        print('\t(' + total_files_deleted + ' files deleted)\n')
 
     elif options[menu_index] == delete_files_with_specific_size:
         file_sizes = ['bytes', 'KB', 'MB', 'GB', 'TB', close_program]
@@ -134,7 +140,7 @@ while True:
             if estimate_file_size[estimate_file_size_index] != close_program:
 
                 try:
-                    input_file_size = float(input('File Size (Example: 10 (unit chosen)): '))
+                    input_file_size = float(input('File Size (Example: 10): '))
                     print()
 
                     converted_to_bytes = input_file_size
@@ -182,10 +188,32 @@ while True:
                                     os.remove(file)
                                     total_files_deleted += 1
 
-                            print('\t' + total_files_deleted + ' files deleted\n')
+                            print('\t(' + total_files_deleted + ' files deleted)\n')
 
                 except:
                     print('\t' + invalid_input + '\n')
+
+    elif options[menu_index] == create_dir:
+        dir_name = input('Enter Directory Name: ')
+        print()
+
+        if len(dir_name) > 0:
+            os.mkdir(dir_name)
+            print('\t(Directory successfully created)\n')
+
+        else:
+            print('\t(Directory must have a name!)\n')
+
+    elif options[menu_index] == delete_dir:
+        dir_name = input('Enter Directory Name: ')
+        print()
+
+        if os.path.isdir(dir_name):
+            os.rmdir(dir_name)
+            print('\t(Directory deleted)\n')
+
+        else:
+            print("\t(Directory doesn't exist!)\n")
 
     else:
         break
