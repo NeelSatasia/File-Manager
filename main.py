@@ -17,10 +17,11 @@ delete_type_of_files = 'Delete A Type Of Files'
 delete_files_with_specific_size = 'Delete Files With Specific Size'
 create_dir = 'Create Directory'
 delete_dir = 'Delete Directory'
-sort_filenames_numerically = 'Sort File Names Numerically'
+sort_filenames_numerically = 'Sort File Names With Numbers'
 close_program = '[x] Close'
+exit_menu = '[x] Exit'
 
-current_dir = 'None'
+current_dir = ''
 invalid_input = '(Invalid Input!)'
 
 options = [add_new_dir, remove_dir, change_dir, get_dir_info, get_file_location, create_file, rename_file, delete_file, delete_all_files, delete_type_of_files, delete_files_with_specific_size, create_dir, delete_dir, sort_filenames_numerically, close_program]
@@ -28,21 +29,62 @@ menu = TerminalMenu(options)
 
 print()
 
-create
+create_database()
+if len(get_dirs_names()) > 0:
+    current_dir = get_current_dir_path()
+
+    if len(current_dir) > 0:
+        os.chdir(current_dir)
+        print('Current Directory Path: ' + current_dir + '\n')
 
 while True:
     menu_index = menu.show()
 
-    if options[menu_index] == change_dir:
-        new_dir = input('Change Directory Path: ')
+    if options[menu_index] == add_new_dir:
+        dir_nickname = input('Enter Directory Nickname: ')
+
+        dir_path = input('Enter Directory Path: ')
         print()
 
-        if os.path.isdir(new_dir):
-            os.chdir(new_dir)
-            current_dir = new_dir
+        confirm = ['Yes', 'No']
+        confirm_menu = TerminalMenu(confirm)
+        confirm_menu_index = confirm_menu.show()
+
+        if confirm[confirm_menu_index] == 'Yes':
+            add_dir_info(dir_nickname, dir_path)
+            print('\t(New directory info added)\n')
+
+    elif options[menu_index] == remove_dir:
+        saved_dirs = get_dirs_names()
+        saved_dirs.append(exit_menu)
+
+        if len(saved_dirs) > 0:
+            saved_dirs_menu = TerminalMenu(saved_dirs)
+            saved_dirs_menu_index = saved_dirs_menu.show()
+
+            if saved_dirs[saved_dirs_menu_index] != exit_menu:
+                remove_dir(saved_dirs[saved_dirs_menu_index])
+                print('(Directory removed)\n')
 
         else:
-            print(invalid_input + '\n')
+            print('(No saved directories found in the directory list!)\n')
+
+    elif options[menu_index] == change_dir:
+
+        if len(get_dirs_names()) > 0:
+            saved_dirs = get_dirs_names()
+            saved_dirs.append(exit_menu)
+            saved_dirs_menu = TerminalMenu(saved_dirs)
+            saved_dirs_menu_index = saved_dirs_menu.show()
+
+            if saved_dirs[saved_dirs_menu_index] != exit_menu:
+                os.chdir(get_dir_path(saved_dirs[saved_dirs_menu_index]))
+                current_dir = os.getcwd()
+
+                print('Current Directory Path: ' + current_dir + '\n')
+
+        else:
+            print('(No saved directories found in the directory list!)\n')
 
     elif options[menu_index] == get_dir_info:
         print('Absolute Path: ' + current_dir + '\n')
@@ -111,7 +153,7 @@ while True:
                     os.remove(file)
                     total_files_deleted += 1
 
-            print('\t(' + total_files_deleted + ' files deleted)\n')
+            print('\t(' + str(total_files_deleted) + ' files deleted)\n')
 
     elif options[menu_index] == delete_type_of_files:
         file_type = input("Enter File Type (Example: txt): ")
@@ -124,7 +166,7 @@ while True:
                 os.remove(file)
                 total_files_deleted += 1
 
-        print('\t(' + total_files_deleted + ' files deleted)\n')
+        print('\t(' + str(total_files_deleted) + ' files deleted)\n')
 
     elif options[menu_index] == delete_files_with_specific_size:
         file_sizes = ['bytes', 'KB', 'MB', 'GB', 'TB', close_program]
@@ -214,6 +256,26 @@ while True:
 
         else:
             print("\t(Directory doesn't exist!)\n")
+
+    elif options[menu_index] == sort_filenames_numerically:
+        num_order = ['Yes', 'No']
+        num_order_menu = TerminalMenu(num_order)
+        num_order_menu_index = num_order_menu.show()
+
+        if num_order[num_order_menu_index] == 'Yes':
+
+            order_name = input("Order File Name (Don't write file extension): ")
+            print()
+
+            file_num = 1
+
+            for file_name in os.listdir():
+
+                if os.path.isfile(file_name):
+                    extension = os.path.splitext(file_name)[1]
+                    os.rename(file_name, order_name + str(file_num) + extension)
+
+                    file_num += 1
 
     else:
         break
