@@ -50,7 +50,7 @@ def get_dirs_names():
     return dirs_names
 
 
-def remove_dir(dir_nickname):
+def remove_dir_directory_list(dir_nickname):
     db = sqlite3.connect(file_name)
     cursor = db.cursor()
 
