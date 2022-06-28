@@ -20,13 +20,14 @@ create_dir = 'Create Directory'
 delete_dir = 'Delete Directory'
 sort_filenames_numerically = 'Sort File Names With Numbers'
 sort_filenames_of_file_type_numerically = 'Sort File Names Of A File Type Numerically'
+capitalize_filenames = 'Capitalize File and Directory Names'
 close_program = '[x] Close'
 exit_menu = '[x] Exit'
 
 current_dir = ''
 invalid_input = '(Invalid Input!)'
 
-options = [add_new_dir, remove_dir, change_dir, get_dir_info, get_file_location, create_file, rename_file, delete_file, delete_all_files, delete_type_of_files, delete_files_with_specific_size, create_dir, delete_dir, sort_filenames_numerically, sort_filenames_of_file_type_numerically, delete_files_start_end_with]
+options = [add_new_dir, remove_dir, change_dir, get_dir_info, get_file_location, create_file, rename_file, delete_file, delete_all_files, delete_type_of_files, delete_files_with_specific_size, create_dir, delete_dir, sort_filenames_numerically, sort_filenames_of_file_type_numerically, delete_files_start_end_with, capitalize_filenames]
 options.sort()
 options.append(close_program)
 
@@ -376,6 +377,18 @@ while True:
 
             else:
                 print('\t(Must enter character(s))\n')
+
+    elif options[menu_index] == capitalize_filenames:
+        confirm = ['Confirm?', '[x] Cancel']
+        confirm_menu = TerminalMenu(confirm)
+        confirm_menu_index = confirm_menu.show()
+
+        if confirm[confirm_menu_index] == 'Confirm?':
+
+            for type in os.listdir():
+                os.rename(os.path.splitext(type)[0], os.path.splitext(type)[0].upper())
+
+            print('(All file and directory names are capitalized)\n')
 
     else:
         break
