@@ -20,9 +20,11 @@ create_dir = 'Create Directory'
 delete_dir = 'Delete Directory'
 sort_filenames_numerically = 'Sort File Names With Numbers'
 sort_filenames_of_file_type_numerically = 'Sort File Names Of A File Type Numerically'
-capitalize_filenames = 'Capitalize File and Directory Names'
+capitalize_filenames = 'Un/Capitalize File and Directory Names'
 close_program = '[x] Close'
 exit_menu = '[x] Exit'
+cancel = '[x] Cancel'
+confirm_option = 'Confirm?'
 
 current_dir = ''
 invalid_input = '(Invalid Input!)'
@@ -53,11 +55,11 @@ while True:
         dir_path = input('Enter Directory Path: ')
         print()
 
-        confirm = ['Confirm', '[x] Cancel']
+        confirm = [confirm_option, cancel]
         confirm_menu = TerminalMenu(confirm)
         confirm_menu_index = confirm_menu.show()
 
-        if confirm[confirm_menu_index] == 'Confirm':
+        if confirm[confirm_menu_index] == confirm_option:
             add_dir_info(dir_nickname, dir_path)
             print('\t(New directory info added)\n')
 
@@ -166,12 +168,12 @@ while True:
             print('\t(Must enter a file name!)\n')
 
     elif options[menu_index] == delete_all_files:
-        confirm = ['Confirm', '[x] Cancel']
+        confirm = [confirm_option, cancel]
         confirm_menu = TerminalMenu(confirm)
         confirm_menu_index = confirm_menu.show()
         print()
 
-        if confirm[confirm_menu_index] == 'Confirm':
+        if confirm[confirm_menu_index] == confirm_option:
             total_files_deleted = 0
 
             for file in os.listdir():
@@ -379,16 +381,53 @@ while True:
                 print('\t(Must enter character(s))\n')
 
     elif options[menu_index] == capitalize_filenames:
-        confirm = ['Confirm?', '[x] Cancel']
-        confirm_menu = TerminalMenu(confirm)
-        confirm_menu_index = confirm_menu.show()
+        only_files = 'Only Files'
+        only_folders = 'Only Folders'
+        both_type = 'Both'
 
-        if confirm[confirm_menu_index] == 'Confirm?':
+        type_to_capitalize = [only_files, only_folders, both_type, cancel]
+        type_to_capitalize_menu = TerminalMenu(type_to_capitalize)
+        type_to_capitalize_menu_index = type_to_capitalize_menu.show()
 
-            for type in os.listdir():
-                os.rename(os.path.splitext(type)[0], os.path.splitext(type)[0].upper())
+        if type_to_capitalize[type_to_capitalize_menu_index] != cancel:
 
-            print('(All file and directory names are capitalized)\n')
+            cap_all_chars = 'Capitalize All The Characters'
+            cap_first_char = 'Capitalize The First Character Only'
+            uncap_all_chars = 'Uncapitalize All The Characters'
+
+            capitalize = [cap_all_chars, cap_first_char, uncap_all_chars, cancel]
+            capitalize_menu = TerminalMenu(capitalize)
+            capitalize_menu_index = capitalize_menu.show()
+
+            if capitalize[capitalize_menu_index] != cancel:
+
+                for type in os.listdir():
+                    if capitalize[capitalize_menu_index] == cap_all_chars:
+                        if type_to_capitalize[type_to_capitalize_menu_index] == only_files or type_to_capitalize[type_to_capitalize_menu_index] == both_type:
+                            if os.path.isfile(type):
+                                os.rename(type, os.path.splitext(type)[0].upper() + os.path.splitext(type)[1])
+
+                        if type_to_capitalize[type_to_capitalize_menu_index] == only_folders or type_to_capitalize[type_to_capitalize_menu_index] == both_type:
+                            if os.path.isdir(type):
+                                os.rename(os.path.splitext(type)[0], os.path.splitext(type)[0].upper())
+
+                    elif capitalize[capitalize_menu_index] == cap_first_char:
+                        if type_to_capitalize[type_to_capitalize_menu_index] == only_files or type_to_capitalize[type_to_capitalize_menu_index] == both_type:
+                            if os.path.isfile(type):
+                                os.rename(type, os.path.splitext(type)[0].capitalize() + os.path.splitext(type)[1])
+
+                        if type_to_capitalize[type_to_capitalize_menu_index] == only_folders or type_to_capitalize[type_to_capitalize_menu_index] == both_type:
+                            if os.path.isdir(type):
+                                os.rename(os.path.splitext(type)[0], os.path.splitext(type)[0].capitalize())
+
+                    else:
+                        if type_to_capitalize[type_to_capitalize_menu_index] == only_files or type_to_capitalize[type_to_capitalize_menu_index] == both_type:
+                            if os.path.isfile(type):
+                                os.rename(type, os.path.splitext(type)[0].lower() + os.path.splitext(type)[1])
+
+                        if type_to_capitalize[type_to_capitalize_menu_index] == only_folders or type_to_capitalize[type_to_capitalize_menu_index] == both_type:
+                            if os.path.isdir(type):
+                                os.rename(os.path.splitext(type)[0], os.path.splitext(type)[0].lower())
 
     else:
         break
